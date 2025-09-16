@@ -61,11 +61,22 @@ const menuItems = [
 ];
 
 const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
+  const [expandedItems, setExpandedItems] = React.useState(
+    new Set(["analytics"])
+  );
+
+  const toggleExpanded = (itemId) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(itemId)) newExpanded.delete(itemId);
+    else newExpanded.add(itemId);
+    setExpandedItems(newExpanded);
+  };
+
   return (
     <div
       className={`${
         collapsed ? "w-20" : "w-72"
-      } transition duration-300 ease-in-out bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col relative z-10`}
+      } transition-all duration-300 ease-in-out bg-white/80 backdrop-blur-xl border-r border-slate-200/50 flex flex-col relative z-10`}
     >
       {/* Logo */}
       <div className="p-6 border-b border-slate-200/50">
@@ -94,6 +105,13 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
                   ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
                   : "text-slate-600 hover:bg-slate-100"
               }`}
+              onClick={() => {
+                if (item.submenu) {
+                  toggleExpanded(item.id);
+                } else {
+                  onPageChange(item.id);
+                }
+              }}
             >
               <div className="flex items-center space-x-3">
                 <item.icon className="w-5 h-5" />
@@ -101,17 +119,19 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
                 {/* Conditional Rendering */}
 
                 {!collapsed && (
-                  <span className="font-medium ml-2">{item.label}</span>
-                )}
-                {item.badge && (
-                  <span className="px-2 py-1 text-xs bg-red-500 text-white rounded-full">
-                    {item.badge}
-                  </span>
-                )}
-                {item.count && (
-                  <span className="px-2 py-1 text-xs bg-slate-200 text-slate-600 rounded-full">
-                    {item.count}
-                  </span>
+                  <>
+                    <span className="font-medium ml-2">{item.label}</span>
+                    {item.badge && (
+                      <span className="px-2 py-1 text-xs bg-red-500 text-white rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                    {item.count && (
+                      <span className="px-2 py-1 text-xs bg-slate-200 text-slate-600 rounded-full">
+                        {item.count}
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
               {!collapsed && item.submenu && (
@@ -120,12 +140,12 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
             </button>
 
             {/* Submenu */}
-            {!collapsed && item.submenu && (
+            {!collapsed && item.submenu && expandedItems.has(item.id) && (
               <div className="ml-8 mt-2 space-y-1">
                 {item.submenu.map((subItem) => (
                   <button
                     key={subItem.id}
-                    className="w-full text-left p-2 rounded-lg hover:bg-slate-100"
+                    className="w-full text-left p-2 text-sm text-slate-600 hover:textslate-800 hover:bg-slate-100 rounded-lg transition-all"
                   >
                     {subItem.label}
                   </button>

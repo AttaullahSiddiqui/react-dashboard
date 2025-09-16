@@ -10,13 +10,16 @@ import {
 } from "lucide-react";
 import React from "react";
 
-const Header = () => {
+const Header = ({ sideBarCollapsed, onToggleSidebar }) => {
   return (
     <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/50 px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Left section */}
         <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+          <button
+            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+            onClick={onToggleSidebar}
+          >
             <Menu className="w-5 h-5" />
           </button>
 
